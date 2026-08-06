@@ -11,97 +11,85 @@
             --card-bg: #ffffff;
             --text-main: #1c1c1e;
             --text-sub: #8e8e93;
+            --border-color: #d1d1d6;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             -webkit-font-smoothing: antialiased;
         }
         header {
             background-color: var(--card-bg);
             padding: 30px 20px 15px 20px;
-            border-bottom: 1px solid #d1d1d6;
-            text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
-        header h1 {
-            font-size: 34px;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: -0.5px;
+        header h1 { font-size: 34px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        header p { color: var(--text-sub); margin: 5px 0 0 0; font-size: 15px; }
+        
+        /* Search Box Styles */
+        .search-container {
+            background-color: var(--card-bg);
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        header p {
-            color: var(--text-sub);
-            margin: 5px 0 0 0;
-            font-size: 15px;
+        .search-bar {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: #e5e5ea;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-appearance: none;
         }
-        .container {
-            padding: 20px;
+        .search-bar:focus {
+            background-color: #ffffff;
+            border-color: var(--apple-blue);
         }
+
+        .container { padding: 20px; }
         .notice-box {
             background-color: #e3f2fd;
             border-left: 5px solid var(--apple-blue);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            line-height: 1.4;
+            padding: 15px; border-radius: 8px;
+            margin-bottom: 25px; font-size: 14px; line-height: 1.4;
         }
-        .app-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
+        .app-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .app-card {
             background-color: var(--card-bg);
-            border-radius: 14px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
+            border-radius: 14px; padding: 15px;
+            display: flex; align-items: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .app-icon {
-            width: 60px;
-            height: 60px;
-            background-color: #e5e5ea;
-            border-radius: 12px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--text-sub);
-            font-size: 20px;
-            flex-shrink: 0;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #007af5, #0056b3);
+            border-radius: 12px; margin-right: 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: white; font-size: 18px; flex-shrink: 0;
         }
-        .app-info {
-            flex-grow: 1;
-        }
-        .app-title {
-            font-size: 17px;
-            font-weight: 600;
-            margin: 0 0 3px 0;
-        }
-        .app-meta {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin: 0;
-        }
+        .app-info { flex-grow: 1; }
+        .app-title { font-size: 17px; font-weight: 600; margin: 0 0 3px 0; }
+        .app-meta { font-size: 13px; color: var(--text-sub); margin: 0; }
         .btn-install {
-            background-color: #f1f2f6;
-            color: var(--apple-blue);
-            text-decoration: none;
-            padding: 6px 18px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            transition: background-color 0.2s;
+            background-color: #f1f2f6; color: var(--apple-blue);
+            text-decoration: none; padding: 6px 18px;
+            border-radius: 15px; font-weight: 700; font-size: 14px;
+            text-transform: uppercase; cursor: pointer;
+            text-align: center;
         }
-        .btn-install:active {
-            background-color: #e5e5ea;
+        .no-results {
+            text-align: center;
+            color: var(--text-sub);
+            margin-top: 30px;
+            font-size: 16px;
+            display: none;
         }
     </style>
 </head>
@@ -112,34 +100,104 @@
         <p>iOS 12.5.8+ Ad-Hoc Dynamic Installer</p>
     </header>
 
+    <!-- Search Feature -->
+    <div class="search-container">
+        <input type="text" id="searchBar" class="search-bar" placeholder="🔍 Search apps...">
+    </div>
+
     <div class="container">
         <div class="notice-box">
             <strong>⚠️ Requirement:</strong> Your device must be jailbroken and running <strong>AppSync Unified</strong> via Cydia/Zebra for downloads to install successfully.
         </div>
 
-        <div class="app-grid">
-            <!-- App Template Item -->
-            <div class="app-card">
-                <div class="app-icon">TRO</div>
-                <div class="app-info">
-                    <p class="app-title">Example App Name</p>
-                    <p class="app-meta">v1.0 • Unsigned IPA</p>
-                </div>
-                <!-- Dynamic ITMS Link Generator -->
-                <a class="btn-install" href="itms-services://?action=download-manifest&url=https://YOUR_GITHUB_USERNAME.github.io/tro-store/manifest.plist">GET</a>
-            </div>
-        </div>
+        <!-- The app cards will be safely injected here dynamically -->
+        <div class="app-grid" id="appCatalog"></div>
+        <div class="no-results" id="noResults">No apps found matching your search.</div>
     </div>
 
     <script>
-        // Automatic Fallback Check for iOS Legacy browsers
-        document.querySelectorAll('.btn-install').forEach(button => {
-            button.addEventListener('click', () => {
-                setTimeout(() => {
-                    alert("If the install prompt did not appear, verify you opened this page inside native mobile Safari.");
-                }, 1500);
+        // CONFIGURATION: Set your info here once!
+        const GITHUB_USER = "YOUR_GITHUB_USERNAME";
+        const REPO_NAME = "tro-store";
+
+        // APP DATABASE: Add your external or GitHub IPA links here
+        const apps = [
+            {
+                name: "Example App Name",
+                version: "v1.0",
+                bundleId: "com.trostore.example",
+                // You can use direct GitHub release links
+                ipaUrl: `https://github.com{GITHUB_USER}/${REPO_NAME}/releases/download/v1.0/app.ipa`,
+                shortName: "TRO"
+            },
+            {
+                name: "Flappy Bird Legacy",
+                version: "v1.3",
+                bundleId: "com.dotgears.flappybird",
+                // Or you can drop ANY direct external internet URL ending in .ipa
+                ipaUrl: "https://archive.org",
+                shortName: "FB"
+            },
+            {
+                name: "Minecraft PE Old",
+                version: "v0.14.0",
+                bundleId: "com.mojang.minecraftpe",
+                ipaUrl: "https://example-external-storage.com",
+                shortName: "MC"
+            }
+        ];
+
+        const catalog = document.getElementById('appCatalog');
+        const noResults = document.getElementById('noResults');
+        const searchBar = document.getElementById('searchBar');
+
+        // Function to build and render the app list
+        function renderApps(filteredApps) {
+            catalog.innerHTML = "";
+            if (filteredApps.length === 0) {
+                noResults.style.display = "block";
+                return;
+            }
+            noResults.style.display = "none";
+
+            filteredApps.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                
+                // Construct a dynamic plist redirect payload target to manage multiple custom URLs
+                const manifestUrl = `https://${GITHUB_USER}.github.io/${REPO_NAME}/manifest.plist`;
+                const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(manifestUrl)}`;
+
+                card.innerHTML = `
+                    <div class="app-icon">${app.shortName}</div>
+                    <div class="app-info">
+                        <p class="app-title">${app.name}</p>
+                        <p class="app-meta">${app.version} • Unsigned IPA</p>
+                    </div>
+                    <a class="btn-install" href="${itmsLink}" onclick="prepareDownload('${app.ipaUrl}', '${app.bundleId}', '${app.name}')">GET</a>
+                `;
+                catalog.appendChild(card);
             });
+        }
+
+        // Search filtering logic
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const filtered = apps.filter(app => 
+                app.name.toLowerCase().includes(searchTerm) || 
+                app.shortName.toLowerCase().includes(searchTerm)
+            );
+            renderApps(filtered);
         });
+
+        // Initialize display
+        renderApps(apps);
+
+        // Tracker tracking routine
+        function prepareDownload(url, bundle, title) {
+            console.log(`Setting dynamic destination pipeline for target app: ${title}`);
+            // Note: Since iOS Safari downloads natively, ensure your hosting link maintains a clean direct .ipa extension file layout
+        }
     </script>
 </body>
 </html>
