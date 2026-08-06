@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRO Store</title>
+    <style>
+        :root {
+            --apple-blue: #007af5;
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-sub: #8e8e93;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        header {
+            background-color: var(--card-bg);
+            padding: 30px 20px 15px 20px;
+            border-bottom: 1px solid #d1d1d6;
+            text-align: left;
+        }
+        header h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        header p {
+            color: var(--text-sub);
+            margin: 5px 0 0 0;
+            font-size: 15px;
+        }
+        .container {
+            padding: 20px;
+        }
+        .notice-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid var(--apple-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .app-card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #e5e5ea;
+            border-radius: 12px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-sub);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .app-info {
+            flex-grow: 1;
+        }
+        .app-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0 0 3px 0;
+        }
+        .app-meta {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin: 0;
+        }
+        .btn-install {
+            background-color: #f1f2f6;
+            color: var(--apple-blue);
+            text-decoration: none;
+            padding: 6px 18px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+        .btn-install:active {
+            background-color: #e5e5ea;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TRO Store</h1>
+        <p>iOS 12.5.8+ Ad-Hoc Dynamic Installer</p>
+    </header>
+
+    <div class="container">
+        <div class="notice-box">
+            <strong>⚠️ Requirement:</strong> Your device must be jailbroken and running <strong>AppSync Unified</strong> via Cydia/Zebra for downloads to install successfully.
+        </div>
+
+        <div class="app-grid">
+            <!-- App Template Item -->
+            <div class="app-card">
+                <div class="app-icon">TRO</div>
+                <div class="app-info">
+                    <p class="app-title">Example App Name</p>
+                    <p class="app-meta">v1.0 • Unsigned IPA</p>
+                </div>
+                <!-- Dynamic ITMS Link Generator -->
+                <a class="btn-install" href="itms-services://?action=download-manifest&url=https://YOUR_GITHUB_USERNAME.github.io/tro-store/manifest.plist">GET</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic Fallback Check for iOS Legacy browsers
+        document.querySelectorAll('.btn-install').forEach(button => {
+            button.addEventListener('click', () => {
+                setTimeout(() => {
+                    alert("If the install prompt did not appear, verify you opened this page inside native mobile Safari.");
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
