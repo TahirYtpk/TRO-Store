@@ -28,176 +28,159 @@
         header h1 { font-size: 34px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
         header p { color: var(--text-sub); margin: 5px 0 0 0; font-size: 15px; }
         
-        /* Search Box Styles */
         .search-container {
             background-color: var(--card-bg);
             padding: 10px 20px;
             border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky; top: 0; z-index: 100;
         }
         .search-bar {
-            width: 100%;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background-color: #e5e5ea;
-            box-sizing: border-box;
-            outline: none;
-            -webkit-appearance: none;
+            width: 100%; padding: 10px 15px; font-size: 16px;
+            border-radius: 10px; border: 1px solid var(--border-color);
+            background-color: #e5e5ea; box-sizing: border-box; outline: none;
         }
-        .search-bar:focus {
-            background-color: #ffffff;
-            border-color: var(--apple-blue);
-        }
+        .search-bar:focus { background-color: #ffffff; border-color: var(--apple-blue); }
 
         .container { padding: 20px; }
         .notice-box {
-            background-color: #e3f2fd;
-            border-left: 5px solid var(--apple-blue);
-            padding: 15px; border-radius: 8px;
-            margin-bottom: 25px; font-size: 14px; line-height: 1.4;
+            background-color: #e3f2fd; border-left: 5px solid var(--apple-blue);
+            padding: 15px; border-radius: 8px; margin-bottom: 25px; font-size: 14px;
         }
         .app-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .app-card {
-            background-color: var(--card-bg);
-            border-radius: 14px; padding: 15px;
-            display: flex; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: var(--card-bg); border-radius: 14px; padding: 15px;
+            display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .app-icon {
             width: 60px; height: 60px;
             background: linear-gradient(135deg, #007af5, #0056b3);
             border-radius: 12px; margin-right: 15px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: white; font-size: 18px; flex-shrink: 0;
+            font-weight: bold; color: white; font-size: 16px; flex-shrink: 0;
         }
         .app-info { flex-grow: 1; }
-        .app-title { font-size: 17px; font-weight: 600; margin: 0 0 3px 0; }
-        .app-meta { font-size: 13px; color: var(--text-sub); margin: 0; }
+        .app-title { font-size: 16px; font-weight: 600; margin: 0 0 3px 0; }
+        .app-meta { font-size: 12px; color: var(--text-sub); margin: 0; }
         .btn-install {
             background-color: #f1f2f6; color: var(--apple-blue);
-            text-decoration: none; padding: 6px 18px;
-            border-radius: 15px; font-weight: 700; font-size: 14px;
-            text-transform: uppercase; cursor: pointer;
-            text-align: center;
+            text-decoration: none; padding: 6px 18px; border-radius: 15px;
+            font-weight: 700; font-size: 13px; text-transform: uppercase;
         }
-        .no-results {
-            text-align: center;
-            color: var(--text-sub);
-            margin-top: 30px;
-            font-size: 16px;
-            display: none;
-        }
+        .status-msg { text-align: center; color: var(--text-sub); padding: 20px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>TRO Store</h1>
-        <p>iOS 12.5.8+ Ad-Hoc Dynamic Installer</p>
+        <p>iOS 12.5.8+ Archive Explorer Engine</p>
     </header>
 
-    <!-- Search Feature -->
     <div class="search-container">
-        <input type="text" id="searchBar" class="search-bar" placeholder="🔍 Search apps...">
+        <input type="text" id="searchBar" class="search-bar" placeholder="🔍 Search custom & archive apps...">
     </div>
 
     <div class="container">
         <div class="notice-box">
-            <strong>⚠️ Requirement:</strong> Your device must be jailbroken and running <strong>AppSync Unified</strong> via Cydia/Zebra for downloads to install successfully.
+            <strong>⚠️ Jailbreak Required:</strong> Run <strong>AppSync Unified</strong> before clicking download loops.
         </div>
 
-        <!-- The app cards will be safely injected here dynamically -->
+        <div id="statusMessage" class="status-msg">Bootstrapping external archive index...</div>
         <div class="app-grid" id="appCatalog"></div>
-        <div class="no-results" id="noResults">No apps found matching your search.</div>
     </div>
 
     <script>
-        // CONFIGURATION: Set your info here once!
-        const GITHUB_USER = "YOUR_GITHUB_USERNAME";
-        const REPO_NAME = "tro-store";
+        // CRITICAL ENGINE ROUTING CONFIG
+        const MY_GITHUB_USER = "YOUR_GITHUB_USERNAME";
+        const MY_REPO = "tro-store";
+        
+        // Publicly open plist generation middleware for static hosting setups
+        const PLIST_PROXY = "https://binnichtaktiv.de";
 
-        // APP DATABASE: Add your external or GitHub IPA links here
-        const apps = [
+        // Custom local application definitions
+        let localApps = [
             {
-                name: "Example App Name",
+                name: "TRO Store Installer Alpha",
                 version: "v1.0",
-                bundleId: "com.trostore.example",
-                // You can use direct GitHub release links
-                ipaUrl: `https://github.com{GITHUB_USER}/${REPO_NAME}/releases/download/v1.0/app.ipa`,
-                shortName: "TRO"
-            },
-            {
-                name: "Flappy Bird Legacy",
-                version: "v1.3",
-                bundleId: "com.dotgears.flappybird",
-                // Or you can drop ANY direct external internet URL ending in .ipa
-                ipaUrl: "https://archive.org",
-                shortName: "FB"
-            },
-            {
-                name: "Minecraft PE Old",
-                version: "v0.14.0",
-                bundleId: "com.mojang.minecraftpe",
-                ipaUrl: "https://example-external-storage.com",
-                shortName: "MC"
+                bundleId: "com.trostore.alpha",
+                ipaUrl: `https://github.com{MY_GITHUB_USER}/${MY_REPO}/releases/download/v1.0/app.ipa`,
+                source: "Local Repo"
             }
         ];
 
+        let archiveApps = [];
         const catalog = document.getElementById('appCatalog');
-        const noResults = document.getElementById('noResults');
-        const searchBar = document.getElementById('searchBar');
+        const statusMessage = document.getElementById('statusMessage');
 
-        // Function to build and render the app list
-        function renderApps(filteredApps) {
-            catalog.innerHTML = "";
-            if (filteredApps.length === 0) {
-                noResults.style.display = "block";
-                return;
+        // Fetching the raw database structure dynamically from stuffed18 asset infrastructure
+        async function loadArchiveData() {
+            try {
+                const response = await fetch('https://githubusercontent.com');
+                const rawData = await response.json();
+                
+                // Parse objects natively out of the indexed schema
+                archiveApps = Object.keys(rawData).map(key => {
+                    const item = rawData[key];
+                    return {
+                        name: item.title || "Legacy Application",
+                        version: item.version || "Unknown",
+                        bundleId: item.bundleId || "com.archive.app",
+                        ipaUrl: item.url || "",
+                        source: "Archive Index"
+                    };
+                }).filter(app => app.ipaUrl !== "");
+
+                statusMessage.style.display = "none";
+                renderLibrary([...localApps, ...archiveApps]);
+            } catch (err) {
+                statusMessage.innerText = "Error importing archive library index source.";
+                renderLibrary(localApps);
             }
-            noResults.style.display = "none";
+        }
 
-            filteredApps.forEach(app => {
+        function renderLibrary(dataset) {
+            catalog.innerHTML = "";
+            // Slice processing limits rendering stack size to maintain native iOS 12 Safari performance profiles
+            const limitedView = dataset.slice(0, 150); 
+
+            limitedView.forEach(app => {
                 const card = document.createElement('div');
                 card.className = 'app-card';
                 
-                // Construct a dynamic plist redirect payload target to manage multiple custom URLs
-                const manifestUrl = `https://${GITHUB_USER}.github.io/${REPO_NAME}/manifest.plist`;
-                const itmsLink = `itms-services://?action=download-manifest&url=${encodeURIComponent(manifestUrl)}`;
+                // Generate clean, readable identifiers
+                const visualStamp = app.name.substring(0, 3).toUpperCase();
+                
+                // Native deployment installer link formation mapping
+                // Forcing proxy injection loops to process external non-secure HTTP / direct server binaries natively
+                const dynamicPlist = `${PLIST_PROXY}${encodeURIComponent(app.ipaUrl)}&id=${app.bundleId}&title=${encodeURIComponent(app.name)}`;
+                const itmsPayload = `itms-services://?action=download-manifest&url=${encodeURIComponent(dynamicPlist)}`;
 
                 card.innerHTML = `
-                    <div class="app-icon">${app.shortName}</div>
+                    <div class="app-icon">${visualStamp}</div>
                     <div class="app-info">
                         <p class="app-title">${app.name}</p>
-                        <p class="app-meta">${app.version} • Unsigned IPA</p>
+                        <p class="app-meta">${app.version} • ${app.source}</p>
                     </div>
-                    <a class="btn-install" href="${itmsLink}" onclick="prepareDownload('${app.ipaUrl}', '${app.bundleId}', '${app.name}')">GET</a>
+                    <a class="btn-install" href="${itmsPayload}">GET</a>
                 `;
                 catalog.appendChild(card);
             });
         }
 
-        // Search filtering logic
-        searchBar.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const filtered = apps.filter(app => 
-                app.name.toLowerCase().includes(searchTerm) || 
-                app.shortName.toLowerCase().includes(searchTerm)
+        // Live input character stream processing
+        document.getElementById('searchBar').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const combined = [...localApps, ...archiveApps];
+            
+            const matches = combined.filter(app => 
+                app.name.toLowerCase().includes(query) || 
+                app.bundleId.toLowerCase().includes(query)
             );
-            renderApps(filtered);
+            renderLibrary(matches);
         });
 
-        // Initialize display
-        renderApps(apps);
-
-        // Tracker tracking routine
-        function prepareDownload(url, bundle, title) {
-            console.log(`Setting dynamic destination pipeline for target app: ${title}`);
-            // Note: Since iOS Safari downloads natively, ensure your hosting link maintains a clean direct .ipa extension file layout
-        }
+        // Initialize background data load sequence immediately
+        loadArchiveData();
     </script>
 </body>
 </html>
